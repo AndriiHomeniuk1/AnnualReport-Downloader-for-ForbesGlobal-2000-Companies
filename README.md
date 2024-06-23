@@ -11,8 +11,15 @@ This Python script automates the download of annual reports for companies listed
 ## Requirements
 
 - Python 3.x
-- Dependencies: `requests`, `selenium`
+- Google Chrome browser
+- ChromeDriver
 
+## Dependencies
+
+- `requests`
+- `selenium`
+- `argparse`
+- `json`
 ## Usage
 
 1. **Setup Environment**:
