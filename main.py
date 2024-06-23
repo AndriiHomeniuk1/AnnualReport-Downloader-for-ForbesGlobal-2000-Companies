@@ -11,38 +11,46 @@ options.add_experimental_option('detach', True)
 browser = webdriver.Chrome(options=options)
 
 
-def download_pdf(company_name: str, rank: str, year: int = 2023):
+def download_pdf(company_name: str, rank: str, year: int = 2023) -> None:
     name_for_url = company_name.replace(" ", "+")
-    elements = browser.get(f"https://www.google.com/search?q={name_for_url}+annual+report+{year}+filetype:pdf+&start=0")
+    browser.get(
+        f"https://www.google.com/search?q={name_for_url}+annual+report"
+        f"+{year}+filetype:pdf+&start=0"
+    )
 
     first_result_link = WebDriverWait(browser, 5).until(
-        EC.presence_of_element_located((By.CSS_SELECTOR, 'div.g:nth-child(1) a'))
+        EC.presence_of_element_located(
+            (By.CSS_SELECTOR, 'div.g:nth-child(1) a')
+        )
     )
 
     first_result_link.click()
 
-    pdf_link = browser.current_url  # Отримати поточну URL-адресу вікна з PDF-файлом
+    # To get the current URL of the window with the PDF file
+    pdf_link = browser.current_url
 
     response = requests.get(pdf_link)
     if response.status_code == 200:
         with open(f'reports/{rank}. {company_name}_{year}.pdf', 'wb') as pdf_file:
             pdf_file.write(response.content)
-        print("PDF-файл завантажено успішно.")
+        print("The PDF file has been successfully downloaded.")
     else:
-        print("Помилка завантаження PDF-файлу.")
+        print("Error downloading the PDF file.")
 
 
-def download_multiple_pdfs(file_name: str):
+def download_multiple_pdfs(file_name: str, year: int = 2023) -> None:
     with open(file_name, "r") as json_file:
         data = json.load(json_file)
         for element in data:
             try:
-                download_pdf(element['name'], element['rank'])
-                print(f"Завантажено {element['rank']}. {element['name']}")
+                download_pdf(element['name'], element['rank'], year=year)
+                print(f"Downloaded {element['rank']}. {element['name']}")
             except Exception as e:
                 with open("errors.txt", "a") as errors_file:
                     errors_file.write(f"{element['rank']}. {element['name']}: {str(e)}\n")
-                print(f"Помилка завантаження {element['rank']}. {element['name']}: {str(e)}")
+                print(f"Error downloading {element['rank']}. {element['name']}: {str(e)}")
 
+    browser.quit()
 
-download_multiple_pdfs("forbes.json")
+if __name__ == "__main__":
+    download_multiple_pdfs("for_download_forbes.json", year=2023)
