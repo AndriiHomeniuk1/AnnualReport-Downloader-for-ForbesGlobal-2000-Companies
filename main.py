@@ -1,10 +1,10 @@
+import requests
+import argparse
 import json
-
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import requests
 
 options = webdriver.ChromeOptions()
 options.add_experimental_option('detach', True)
@@ -52,5 +52,18 @@ def download_multiple_pdfs(file_name: str, year: int = 2023) -> None:
 
     browser.quit()
 
+
 if __name__ == "__main__":
-    download_multiple_pdfs("for_download_forbes.json", year=2023)
+    parser = argparse.ArgumentParser(
+        description="Download annual reports for "
+                    "Forbes Global 2000 companies."
+    )
+    parser.add_argument(
+        "--year",
+        type=int,
+        default=2023,
+        help="Year of the annual report to download (default: 2023)"
+    )
+    args = parser.parse_args()
+
+    download_multiple_pdfs("forbes_global_2000.json", year=args.year)
