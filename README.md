@@ -1,6 +1,7 @@
 # Annual Report Downloader for Forbes Global 2000 Companies
 
-This Python script automates the download of annual reports for companies listed in the Forbes Global 2000. It utilizes Selenium for web scraping to find and download PDF reports from Google search results.
+This Python script automates the download of annual reports for companies listed in the Forbes Global 2000.
+It utilizes Selenium for web scraping to find and download PDF reports from Google search results.
 
 ## Features
 
